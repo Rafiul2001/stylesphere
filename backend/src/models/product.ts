@@ -12,15 +12,22 @@ class Product {
     totalQuantity: number;
 
     constructor(
-        productName: string,
-        sizeWiseQuantity: { size: string; quantity: number }[] = [],
-        productId?: string
+        {
+            productName,
+            sizeWiseQuantity = [],
+            productId
+        }:
+            {
+                productName: string,
+                sizeWiseQuantity?: { size: string; quantity: number }[],
+                productId?: string
+            }
     ) {
-        this.productName = productName;
-        this.sizeWiseQuantity = sizeWiseQuantity;
         if (productId) {
             this.productId = productId;
         }
+        this.productName = productName;
+        this.sizeWiseQuantity = sizeWiseQuantity;
         this.totalQuantity = this.calculateTotalQuantity();
     }
 
@@ -30,17 +37,18 @@ class Product {
 }
 
 // Example Usage
-// const product = new Product("Ball");
-// console.log(product);
+const product = new Product({
+    productName: "Ball"
+});
+console.log(product);
 
-// const p2 = new Product("Ball", [
-//     { size: AvailableSizeKeys.M, quantity: 2 },
-//     { size: AvailableSizeKeys.L, quantity: 4 }
-// ]);
-// console.log(p2);
+const p1 = new Product({
+    productName: "Ball",
+    sizeWiseQuantity: [
+        { size: AvailableSizeKeys.L, quantity: 2 },
+        { size: AvailableSizeKeys.M, quantity: 20 },
+        { size: AvailableSizeKeys.XL, quantity: 42 }
+    ]
+})
 
-// const p3 = new Product("Ball", [
-//     { size: AvailableSizeKeys.M, quantity: 2 },
-//     { size: AvailableSizeKeys.L, quantity: 4 }
-// ], "P1");
-// console.log(p3);
+console.log(p1)
