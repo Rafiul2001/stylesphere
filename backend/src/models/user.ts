@@ -33,10 +33,10 @@ class User {
     }
 }
 
-const newUser = new User({
-    userName: "Shah Md. Rafiul Kadir",
-    userPassword: "1234",
-    userId: "user1"
-})
+// const newUser = new User({
+//     userName: "Shah Md. Rafiul Kadir",
+//     userPassword: "1234",
+//     userId: "user1"
+// })
 
-console.log(newUser)
+// console.log(newUser)

@@ -37,18 +37,18 @@ class Product {
 }
 
 // Example Usage
-const product = new Product({
-    productName: "Ball"
-});
-console.log(product);
+// const product = new Product({
+//     productName: "Ball"
+// });
+// console.log(product);
 
-const p1 = new Product({
-    productName: "Ball",
-    sizeWiseQuantity: [
-        { size: AvailableSizeKeys.L, quantity: 2 },
-        { size: AvailableSizeKeys.M, quantity: 20 },
-        { size: AvailableSizeKeys.XL, quantity: 42 }
-    ]
-})
+// const p1 = new Product({
+//     productName: "Ball",
+//     sizeWiseQuantity: [
+//         { size: AvailableSizeKeys.L, quantity: 2 },
+//         { size: AvailableSizeKeys.M, quantity: 20 },
+//         { size: AvailableSizeKeys.XL, quantity: 42 }
+//     ]
+// })
 
-console.log(p1)
+// console.log(p1)
