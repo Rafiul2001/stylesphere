@@ -1,11 +1,11 @@
-enum AvailableSizeKeys {
+export enum AvailableSizeKeys {
     M = "M",
     L = "L",
     XL = "XL",
     XXL = "XXL"
 }
 
-class Product {
+export class Product {
     productId?: string
     productName: string
     productPrice: number
@@ -39,20 +39,3 @@ class Product {
         return this.sizeWiseQuantity.reduce((sum, { quantity }) => sum + quantity, 0)
     }
 }
-
-// Example Usage
-// const product = new Product({
-//     productName: "Ball"
-// });
-// console.log(product);
-
-// const p1 = new Product({
-//     productName: "Ball",
-//     sizeWiseQuantity: [
-//         { size: AvailableSizeKeys.L, quantity: 2 },
-//         { size: AvailableSizeKeys.M, quantity: 20 },
-//         { size: AvailableSizeKeys.XL, quantity: 42 }
-//     ]
-// })
-
-// console.log(p1)

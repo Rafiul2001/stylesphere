@@ -1,10 +1,10 @@
-enum PaymentMethod {
+export enum PaymentMethod {
     CASH_ON_DELIVERY = "CASH_ON_DELIVERY",
     MOBILE_BANKING = "MOBILE_BANKING",
     VISA_OR_MASTER_CARD = "VISA_OR_MASTER_CARD"
 }
 
-enum DeliveryStatus {
+export enum DeliveryStatus {
     PENDING = "PENDING",
     PACKED = "PACKED",                 // Items are packed and ready to ship
     SHIPPED = "SHIPPED",               // Order is handed over to courier
@@ -12,16 +12,19 @@ enum DeliveryStatus {
     DELIVERED = "DELIVERED",           // Successfully delivered
 }
 
-class Order {
+type OrderItem = {
+    productId: string
+    productName: string
+    productSize: string
+    productQuantity: number
+    productPrice: number
+    subTotal: number
+}
+
+export class Order {
     public readonly orderId?: string
     public readonly userId: string
-    public readonly orderedItems: {
-        productId: string
-        productName: string
-        productSize: string
-        productQuantity: number
-        subTotal: number
-    }[]
+    public readonly orderedItems: OrderItem[]
     public readonly totalCost: number
     public readonly paymentMethod: PaymentMethod
     public isPaid: boolean
@@ -44,13 +47,7 @@ class Order {
             {
                 orderId?: string
                 userId: string
-                orderedItems: {
-                    productId: string
-                    productName: string
-                    productSize: string
-                    productQuantity: number
-                    subTotal: number
-                }[],
+                orderedItems: OrderItem[],
                 paymentMethod: PaymentMethod
                 isPaid?: boolean
                 paidAt?: Date

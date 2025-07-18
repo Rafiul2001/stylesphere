@@ -1,4 +1,4 @@
-class User {
+export class User {
     userId?: string
     userEmail: string
     userPhoneNumber: string
@@ -32,11 +32,3 @@ class User {
         this.userImage = userImage
     }
 }
-
-// const newUser = new User({
-//     userName: "Shah Md. Rafiul Kadir",
-//     userPassword: "1234",
-//     userId: "user1"
-// })
-
-// console.log(newUser)
