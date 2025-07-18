@@ -14,11 +14,11 @@ class User {
         userId,
         userImage = ""
     }: {
-        userPhoneNumber?: string,
-        userEmail?: string,
-        userName: string,
-        userPassword: string,
-        userId?: string,
+        userPhoneNumber?: string
+        userEmail?: string
+        userName: string
+        userPassword: string
+        userId?: string
         userImage?: string
     }
     ) {
