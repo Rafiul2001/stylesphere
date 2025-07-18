@@ -4,6 +4,14 @@ enum PaymentMethod {
     VISA_OR_MASTER_CARD = "VISA_OR_MASTER_CARD"
 }
 
+enum DeliveryStatus {
+    PENDING = "PENDING",
+    PACKED = "PACKED",                 // Items are packed and ready to ship
+    SHIPPED = "SHIPPED",               // Order is handed over to courier
+    OUT_FOR_DELIVERY = "OUT_FOR_DELIVERY", // Courier is delivering the package
+    DELIVERED = "DELIVERED",           // Successfully delivered
+}
+
 class Order {
     public readonly orderId?: string
     public readonly userId: string
@@ -15,9 +23,11 @@ class Order {
         subTotal: number
     }[]
     public readonly totalCost: number
-    public readonly paymentMethod: string
+    public readonly paymentMethod: PaymentMethod
     public isPaid: boolean
     public paidAt?: Date
+    public deliveryAddress: string
+    public deliveryStatus: DeliveryStatus
 
     constructor(
         {
@@ -26,7 +36,9 @@ class Order {
             orderedItems,
             paymentMethod,
             isPaid = false,
-            paidAt
+            paidAt,
+            deliveryAddress,
+            deliveryStatus = DeliveryStatus.PENDING
         }
             :
             {
@@ -39,9 +51,11 @@ class Order {
                     productQuantity: number
                     subTotal: number
                 }[],
-                paymentMethod: string
+                paymentMethod: PaymentMethod
                 isPaid?: boolean
                 paidAt?: Date
+                deliveryAddress: string
+                deliveryStatus?: DeliveryStatus
             }
     ) {
         if (orderId) {
@@ -50,9 +64,11 @@ class Order {
         this.userId = userId
         this.orderedItems = orderedItems
         this.totalCost = this.calculateTotalCost()
+        this.deliveryAddress = deliveryAddress
         this.paymentMethod = paymentMethod
         this.isPaid = isPaid
         this.paidAt = paidAt
+        this.deliveryStatus = deliveryStatus
     }
 
     private calculateTotalCost(): number {
@@ -62,5 +78,9 @@ class Order {
     public markAsPaid() {
         this.isPaid = true
         this.paidAt = new Date()
+    }
+
+    public updateDeliveryStatus(deliveryStatus: DeliveryStatus) {
+        this.deliveryStatus = deliveryStatus
     }
 }
