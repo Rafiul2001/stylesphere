@@ -9,22 +9,16 @@ type CartItem = {
 }
 
 class Cart {
-    cartId?: string
     userId: string
     cartItems: CartItem[]
 
     constructor({
-        cartId,
         userId,
         cartItems = []
     }: {
-        cartId?: string
         userId: string
         cartItems?: CartItem[]
     }) {
-        if (cartId) {
-            this.cartId = cartId
-        }
         this.userId = userId
         this.cartItems = cartItems
     }

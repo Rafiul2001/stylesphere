@@ -13,7 +13,6 @@ export enum DeliveryStatus {
 }
 
 type OrderItem = {
-    productId: string
     productName: string
     productSize: string
     productQuantity: number
@@ -22,7 +21,6 @@ type OrderItem = {
 }
 
 export class Order {
-    public readonly orderId?: string
     public readonly userId: string
     public readonly orderedItems: OrderItem[]
     public readonly totalCost: number
@@ -34,7 +32,6 @@ export class Order {
 
     constructor(
         {
-            orderId,
             userId,
             orderedItems,
             paymentMethod,
@@ -45,7 +42,6 @@ export class Order {
         }
             :
             {
-                orderId?: string
                 userId: string
                 orderedItems: OrderItem[],
                 paymentMethod: PaymentMethod
@@ -55,9 +51,6 @@ export class Order {
                 deliveryStatus?: DeliveryStatus
             }
     ) {
-        if (orderId) {
-            this.orderId = orderId
-        }
         this.userId = userId
         this.orderedItems = orderedItems
         this.totalCost = this.calculateTotalCost()

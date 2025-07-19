@@ -6,7 +6,6 @@ export enum AvailableSizeKeys {
 }
 
 export class Product {
-    productId?: string
     productName: string
     productPrice: number
     sizeWiseQuantity: { size: string; quantity: number }[]
@@ -16,19 +15,14 @@ export class Product {
         {
             productName,
             productPrice = 0,
-            sizeWiseQuantity = [],
-            productId
+            sizeWiseQuantity = []
         }:
             {
                 productName: string,
                 productPrice?: number
-                sizeWiseQuantity?: { size: string; quantity: number }[],
-                productId?: string
+                sizeWiseQuantity?: { size: string; quantity: number }[]
             }
     ) {
-        if (productId) {
-            this.productId = productId
-        }
         this.productName = productName
         this.productPrice = productPrice
         this.sizeWiseQuantity = sizeWiseQuantity
