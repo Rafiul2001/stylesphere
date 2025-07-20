@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { User } from "../models/user";
 import { database } from "../mongodb_connection/connection";
 import { CollectionListNames } from "../config/config";
+import { encryptPassword } from "../tools/passwordEncrypter";
 
 const user_router = Router()
 
@@ -15,9 +16,10 @@ user_router.post('/register', async (req: Request<{}, {}, Partial<User>>, res: R
     try {
         const [userName, userPhoneNumber, userEmail, userPassword, userImage] = [req.body.userName, req.body.userPhoneNumber, req.body.userEmail, req.body.userPassword, req.body.userImage]
         if (userName && userPassword) {
+            const encryptedPassword = await encryptPassword(userPassword)
             const newUser = new User({
                 userName: userName,
-                userPassword: userPassword,
+                userPassword: encryptedPassword,
                 userPhoneNumber: userPhoneNumber,
                 userEmail: userEmail,
                 userImage: userImage
