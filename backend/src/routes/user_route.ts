@@ -6,7 +6,7 @@ import { encryptPassword, matchPassword } from "../tools/passwordEncrypter";
 
 const user_router = Router()
 
-// Get User Details By Login
+// Login
 user_router.get('/login', async (req: Request<{}, {}, Partial<User>>, res: Response) => {
     const { userEmail, userPhoneNumber, userPassword } = req.body;
 
