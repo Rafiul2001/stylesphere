@@ -1,42 +1,52 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { User } from "../models/user";
-import { database } from "../mongodb_connection/connection";
-import { CollectionListNames } from "../config/config";
-import { encryptPassword, matchPassword } from "../tools/passwordEncrypter";
+import { Router, Request, Response, NextFunction } from "express"
+import { User } from "../models/user"
+import { database } from "../mongodb_connection/connection"
+import { CollectionListNames } from "../config/config"
+import { encryptPassword, matchPassword } from "../tools/passwordEncrypter"
+import { generateToken } from "../tools/jwt"
 
 const user_router = Router()
 
 // Login
-user_router.get('/login', async (req: Request<{}, {}, Partial<User>>, res: Response) => {
-    const { userEmail, userPhoneNumber, userPassword } = req.body;
+user_router.post('/login', async (req: Request<{}, {}, Partial<User>>, res: Response) => {
+    const { userEmail, userPhoneNumber, userPassword } = req.body
 
     if ((userEmail || userPhoneNumber) && userPassword) {
         try {
-            const query: any = { $or: [] };
+            const query: any = { $or: [] }
 
-            if (userEmail) query.$or.push({ userEmail });
-            if (userPhoneNumber) query.$or.push({ userPhoneNumber });
+            if (userEmail) query.$or.push({ userEmail })
+            if (userPhoneNumber) query.$or.push({ userPhoneNumber })
 
-            const existingUser = await database.collection<User>(CollectionListNames.USER).findOne(query);
+            const existingUser = await database.collection<User>(CollectionListNames.USER).findOne(query)
 
             if (!existingUser) {
-                return res.status(404).json({ message: "User not found" });
+                return res.status(404).json({ message: "User not found", token: null })
             }
 
-            const isPasswordMatch = await matchPassword(userPassword, existingUser.userPassword);
+            const isPasswordMatch = await matchPassword(userPassword, existingUser.userPassword)
 
             if (!isPasswordMatch) {
-                return res.status(401).json({ message: "Invalid password" });
+                return res.status(401).json({ message: "Invalid password", token: null })
             }
 
-            return res.status(200).json({ message: "User logged in", user: existingUser });
+            const generatedToken = generateToken({ userId: existingUser._id })
+
+            return res.status(200).json({
+                message: "User logged in", token: generatedToken, user: {
+                    userId: existingUser._id,
+                    userEmail: existingUser.userEmail,
+                    userPhoneNumber: existingUser.userPhoneNumber,
+                    userImage: existingUser.userImage
+                }
+            })
 
         } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Internal server error" });
+            console.error(error)
+            return res.status(500).json({ message: "Internal server error" })
         }
     } else {
-        return res.status(400).json({ message: "Email or phone number and password are required" });
+        return res.status(400).json({ message: "Email or phone number and password are required" })
     }
 })
 
