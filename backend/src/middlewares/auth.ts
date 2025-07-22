@@ -1,7 +1,13 @@
 import { NextFunction, Request, Response } from "express"
 import { decodeToken } from "../tools/jwt"
 
-export const strictToLogin = (req: Request, res: Response, next: NextFunction) => {
+export interface AuthenticatedRequest<P = {}, ResBody = any, ReqBody = any, ReqQuery = {}> extends Request<P, ResBody, ReqBody, ReqQuery> {
+    user?: {
+        userId: string
+    }
+}
+
+export const strictToLogin = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -15,7 +21,6 @@ export const strictToLogin = (req: Request, res: Response, next: NextFunction) =
         return res.status(401).json({ message: "Unauthorized: Invalid or expired token" })
     }
 
-    // Safely attach decoded data to req.body (or better, extend the Request interface)
-    req.body.decoded = decoded
+    req.user = decoded.dataHolder
     next()
 }

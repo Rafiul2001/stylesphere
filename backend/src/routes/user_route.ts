@@ -4,6 +4,8 @@ import { database } from "../mongodb_connection/connection"
 import { CollectionListNames } from "../config/config"
 import { encryptPassword, matchPassword } from "../tools/passwordEncrypter"
 import { generateToken } from "../tools/jwt"
+import { AuthenticatedRequest, strictToLogin } from "../middlewares/auth"
+import { ObjectId } from "mongodb"
 
 const user_router = Router()
 
@@ -34,7 +36,7 @@ user_router.post('/login', async (req: Request<{}, {}, Partial<User>>, res: Resp
 
             return res.status(200).json({
                 message: "User logged in", token: generatedToken, user: {
-                    userId: existingUser._id,
+                    userName: existingUser.userName,
                     userEmail: existingUser.userEmail,
                     userPhoneNumber: existingUser.userPhoneNumber,
                     userImage: existingUser.userImage
@@ -93,8 +95,41 @@ user_router.post('/register', async (req: Request<{}, {}, Partial<User>>, res: R
 })
 
 // Update User Information
-user_router.put('/:id', (req: Request, res: Response) => {
-    res.status(200).send("User Information Is Updated")
+user_router.put('/update', strictToLogin, async (req: AuthenticatedRequest<{}, {}, Partial<User>>, res: Response) => {
+    const userId = req.user?.userId
+    const [userName, userImage] = [req.body.userName, req.body.userImage]
+
+    try {
+
+        const existingUser = await database.collection<User>(CollectionListNames.USER).findOneAndUpdate(
+            {
+                _id: new ObjectId(userId)
+            },
+            {
+                $set: {
+                    ...(userName !== undefined && { userName }),
+                    ...(userImage !== undefined && { userImage })
+                }
+            },
+            { returnDocument: 'after' } // to return updated document
+        )
+
+        if (!existingUser) {
+            return res.status(200).json({ message: "No user found associated with this token" })
+        }
+        res.status(200).json({
+            message: "User Information Is Updated",
+            user: {
+                userName: existingUser.userName,
+                userImage: existingUser.userImage
+            }
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error!",
+            error: error
+        })
+    }
 })
 
 // Delete Account

@@ -4,7 +4,7 @@ import config from "../config/config"
 export const generateToken = (dataHolder: {}): string => {
     const token = jwt.sign({
         dataHolder
-    }, config.jwtPrivateKey, { expiresIn: '2s' })
+    }, config.jwtPrivateKey, { expiresIn: '1h' })
     return token
 }
 
