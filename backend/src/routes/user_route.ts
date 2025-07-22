@@ -55,6 +55,18 @@ user_router.post('/register', async (req: Request<{}, {}, Partial<User>>, res: R
     try {
         const [userName, userPhoneNumber, userEmail, userPassword, userImage] = [req.body.userName, req.body.userPhoneNumber, req.body.userEmail, req.body.userPassword, req.body.userImage]
         if ((userEmail || userPhoneNumber) && userName && userPassword) {
+
+            const query: any = { $or: [] }
+
+            if (userEmail) query.$or.push({ userEmail })
+            if (userPhoneNumber) query.$or.push({ userPhoneNumber })
+
+            const existingUser = await database.collection<User>(CollectionListNames.USER).findOne(query)
+
+            if (existingUser) {
+                return res.status(200).json({ message: "User already exists!" })
+            }
+
             const encryptedPassword = await encryptPassword(userPassword)
             const newUser = new User({
                 userName: userName,
@@ -65,8 +77,7 @@ user_router.post('/register', async (req: Request<{}, {}, Partial<User>>, res: R
             })
             await database.collection(CollectionListNames.USER).insertOne(newUser)
             res.status(200).json({
-                message: "New user has been registered!",
-                value: newUser
+                message: "New user has been registered!"
             })
         } else {
             res.status(200).json({
