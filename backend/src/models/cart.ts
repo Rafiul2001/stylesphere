@@ -1,6 +1,6 @@
 import { AvailableSizeKeys } from "./product"
 
-type CartItem = {
+export type CartItem = {
     productId: string
     productName: string
     productSize: AvailableSizeKeys
@@ -8,7 +8,7 @@ type CartItem = {
     productPrice: number
 }
 
-class Cart {
+export class Cart {
     userId: string
     cartItems: CartItem[]
 

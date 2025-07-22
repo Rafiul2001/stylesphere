@@ -6,6 +6,7 @@ import { encryptPassword, matchPassword } from "../tools/passwordEncrypter"
 import { generateToken } from "../tools/jwt"
 import { AuthenticatedRequest, strictToLogin } from "../middlewares/auth"
 import { ObjectId } from "mongodb"
+import { Cart } from "../models/cart"
 
 const user_router = Router()
 
@@ -77,12 +78,16 @@ user_router.post('/register', async (req: Request<{}, {}, Partial<User>>, res: R
                 userEmail: userEmail,
                 userImage: userImage
             })
-            await database.collection(CollectionListNames.USER).insertOne(newUser)
-            res.status(200).json({
+            const insertUserResult = await database.collection<User>(CollectionListNames.USER).insertOne(newUser)
+            const newCart = new Cart({
+                userId: insertUserResult.insertedId.toString()
+            })
+            await database.collection<Cart>(CollectionListNames.CART).insertOne(newCart)
+            res.status(201).json({
                 message: "New user has been registered!"
             })
         } else {
-            res.status(200).json({
+            res.status(400).json({
                 message: "Enter a valid username or password!"
             })
         }
