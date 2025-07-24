@@ -1,17 +1,20 @@
 import { Router, Request, Response, NextFunction } from "express"
-import { strictToLogin } from "../middlewares/auth"
+import { AuthenticatedRequest, strictToLogin } from "../middlewares/auth"
 import { database } from "../mongodb_connection/connection"
 import { Cart, CartItem } from "../models/cart"
 import { CollectionListNames } from "../config/config"
 import { ObjectId } from "mongodb"
+import { AvailableSizeKeys } from "../models/product"
 
 const cart_router = Router()
 
-// Get Cart By ID
-cart_router.get('/:cartId', strictToLogin, async (req: Request<{ cartId: string }, {}, {}>, res: Response) => {
-    const cartId = req.params.cartId
+// Get Cart By User Id
+cart_router.get('/get-cart', strictToLogin, async (req: AuthenticatedRequest<{ cartId: string }, {}, {}>, res: Response) => {
+    const userId = req.user?.userId
     try {
-        const cart = await database.collection<Cart>(CollectionListNames.CART).findOne({ _id: new ObjectId(cartId) })
+        const cart = await database.collection<Cart>(CollectionListNames.CART).findOne({
+            userId: userId
+        })
         res.status(200).json({
             message: "User Cart",
             value: cart
@@ -24,33 +27,25 @@ cart_router.get('/:cartId', strictToLogin, async (req: Request<{ cartId: string 
     }
 })
 
-// Add an Item to Cart
-cart_router.put('/add-item/:cartId', strictToLogin, async (req: Request<{ cartId: string }, {}, { cartItem: CartItem }>, res: Response) => {
-    const cartId = req.params.cartId
-    const newCartItem = req.body.cartItem
+// Update cart items
+cart_router.put('/update', strictToLogin, async (req: AuthenticatedRequest<{}, {}, { cartItems: CartItem[] }>, res: Response) => {
+    const userId = req.user?.userId
+    const cartItems = req.body.cartItems
     try {
-        const cart = await database.collection<Cart>(CollectionListNames.CART).findOne({ _id: new ObjectId(cartId) })
-        if (!cart) {
-            return res.status(404).json({
-                message: 'Cart not found',
-                cartId,
-            })
-        }
-        // Add or update item in cart
-        cart.addItemsToCart(newCartItem)
         // Persist the updated cart
-        await database.collection<Cart>(CollectionListNames.CART).updateOne(
+        const cart = await database.collection<Cart>(CollectionListNames.CART).findOneAndUpdate(
             {
-                _id: cart._id
+                userId: userId
             },
             {
                 $set: {
-                    cartItems: cart.cartItems
+                    cartItems: cartItems
                 }
-            }
+            },
+            { returnDocument: "after" }
         )
         return res.status(200).json({
-            message: 'Added item to cart',
+            message: 'Cart is updated',
             value: cart,
         })
     } catch (error) {
@@ -61,51 +56,5 @@ cart_router.put('/add-item/:cartId', strictToLogin, async (req: Request<{ cartId
         })
     }
 })
-
-// Remove an item from cart
-cart_router.put('/remove-item/:cartId', strictToLogin, async (req: Request<{ cartId: string }, {}, { cartItem: Partial<CartItem> }>, res: Response) => {
-    const cartId = req.params.cartId
-    const cartItem = req.body.cartItem
-    try {
-        // Validate required fields
-        if (!cartItem.productId || !cartItem.productSize) {
-            return res.status(400).json({
-                message: 'Missing productId or productSize in request body',
-            })
-        }
-        // Find the cart
-        const cart = await database.collection<Cart>(CollectionListNames.CART).findOne({ _id: new ObjectId(cartId) })
-        if (!cart) {
-            return res.status(404).json({
-                message: 'Cart not found',
-                cartId,
-            })
-        }
-        // Remove the item using a method on the Cart class/object
-        cart.removeItemFromCart(cartItem.productId, cartItem.productSize)
-        // Update the cart in the database
-        await database.collection<Cart>(CollectionListNames.CART).updateOne(
-            {
-                _id: cart._id
-            },
-            {
-                $set: {
-                    cartItems: cart.cartItems
-                }
-            }
-        )
-        return res.status(200).json({
-            message: 'Removed item from cart',
-            value: cart,
-        })
-    } catch (error) {
-        console.error('Error removing item from cart:', error)
-        return res.status(500).json({
-            message: 'Internal server error',
-            error: (error as Error).message,
-        })
-    }
-})
-
 
 export default cart_router
