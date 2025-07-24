@@ -3,6 +3,7 @@ import { CollectionListNames } from "../config/config";
 import { database } from "../mongodb_connection/connection";
 import { Product } from "../models/product";
 import { ObjectId } from "mongodb";
+import { strictToLogin } from "../middlewares/auth";
 
 const product_router = Router()
 
@@ -41,7 +42,7 @@ product_router.get('/:id', async (req: Request<{ id: string }, {}, {}>, res: Res
 })
 
 // Add a Product
-product_router.post('/add-product', async (req: Request<{}, {}, Product>, res: Response) => {
+product_router.post('/add-product', strictToLogin, async (req: Request<{}, {}, Product>, res: Response) => {
     try {
         const newProduct = new Product(
             {
@@ -65,7 +66,7 @@ product_router.post('/add-product', async (req: Request<{}, {}, Product>, res: R
 })
 
 // Update a Product By Id
-product_router.put('/:id', async (req: Request<{ id: string }, {}, { productPrice?: number, sizeWiseQuantity?: { size: string, quantity: number }[] }>, res: Response) => {
+product_router.put('/:id', strictToLogin, async (req: Request<{ id: string }, {}, { productPrice?: number, sizeWiseQuantity?: { size: string, quantity: number }[] }>, res: Response) => {
     try {
         const { productPrice, sizeWiseQuantity } = req.body
         const updateResult = await database.collection<Product>(CollectionListNames.PRODUCT).findOneAndUpdate(
