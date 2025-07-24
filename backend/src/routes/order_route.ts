@@ -1,9 +1,9 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { AuthenticatedRequest, strictToLogin } from "../middlewares/auth";
-import { database } from "../mongodb_connection/connection";
-import { Order, OrderItem, PaymentMethod } from "../models/order";
-import { CollectionListNames } from "../config/config";
-import { ObjectId } from "mongodb";
+import { Router, Request, Response, NextFunction } from "express"
+import { AuthenticatedRequest, strictToLogin } from "../middlewares/auth"
+import { database } from "../mongodb_connection/connection"
+import { DeliveryStatus, Order, OrderItem, PaymentMethod } from "../models/order"
+import { CollectionListNames } from "../config/config"
+import { ObjectId } from "mongodb"
 
 const order_router = Router()
 
@@ -98,9 +98,51 @@ order_router.post('/place-order', strictToLogin, async (req: AuthenticatedReques
     }
 })
 
-// Update a Order Status
-order_router.put('/:id', (req: Request, res: Response) => {
-    res.status(200).send("Order Status Updated!")
+order_router.put('/update/:id', strictToLogin, async (req: AuthenticatedRequest<{ id: string }, {}, {
+    deliveryStatus?: DeliveryStatus,
+    markAsPaid?: boolean
+}>, res: Response) => {
+    const { id } = req.params
+    const { deliveryStatus, markAsPaid } = req.body
+    const userId = req.user?.userId
+
+    try {
+        const existingOrder = await database.collection<Order>(CollectionListNames.ORDER).findOne({
+            _id: new ObjectId(id),
+            userId
+        })
+
+        if (!existingOrder) {
+            return res.status(404).json({ message: "Order not found!" })
+        }
+
+        const updateFields: Partial<Order> = {}
+
+        if (deliveryStatus) {
+            if (!Object.values(DeliveryStatus).includes(deliveryStatus)) {
+                return res.status(400).json({ message: "Invalid delivery status!" })
+            }
+            updateFields.deliveryStatus = deliveryStatus
+        }
+
+        if (markAsPaid === true && !existingOrder.isPaid) {
+            updateFields.isPaid = true
+            updateFields.paidAt = new Date()
+        }
+
+        await database.collection<Order>(CollectionListNames.ORDER).updateOne(
+            { _id: new ObjectId(id) },
+            { $set: updateFields }
+        )
+
+        res.status(200).json({ message: "Order updated successfully." })
+    } catch (error) {
+        console.error("Error updating order:", error)
+        res.status(500).json({
+            message: "Internal server error!",
+            error: error instanceof Error ? error.message : error
+        })
+    }
 })
 
 export default order_router
