@@ -1,10 +1,8 @@
-import { Router, Request, Response, NextFunction } from "express"
+import { Router, Response } from "express"
 import { AuthenticatedRequest, strictToLogin } from "../middlewares/auth"
 import { database } from "../mongodb_connection/connection"
 import { Cart, CartItem } from "../models/cart"
 import { CollectionListNames } from "../config/config"
-import { ObjectId } from "mongodb"
-import { AvailableSizeKeys } from "../models/product"
 
 const cart_router = Router()
 
