@@ -12,7 +12,7 @@ export enum DeliveryStatus {
     DELIVERED = "DELIVERED",           // Successfully delivered
 }
 
-type OrderItem = {
+export type OrderItem = {
     productName: string
     productSize: string
     productQuantity: number
