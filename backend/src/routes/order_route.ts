@@ -104,12 +104,11 @@ order_router.put('/update/:id', strictToLogin, async (req: AuthenticatedRequest<
 }>, res: Response) => {
     const { id } = req.params
     const { deliveryStatus, markAsPaid } = req.body
-    const userId = req.user?.userId
+    // const userId = req.user?.userId
 
     try {
         const existingOrder = await database.collection<Order>(CollectionListNames.ORDER).findOne({
-            _id: new ObjectId(id),
-            userId
+            _id: new ObjectId(id)
         })
 
         if (!existingOrder) {
