@@ -137,9 +137,29 @@ user_router.put('/update', strictToLogin, async (req: AuthenticatedRequest<{}, {
     }
 })
 
-// Delete Account
-user_router.delete('/:id', (req: Request, res: Response) => {
-    res.status(200).send("User is deleted!")
+// Delete user by user
+user_router.delete('/delete', strictToLogin, async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user?.userId
+
+    if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized. User ID missing.' })
+    }
+
+    try {
+        const result = await database.collection<User>(CollectionListNames.USER)
+            .deleteOne({ _id: new ObjectId(userId) })
+
+        if (result.deletedCount === 1) {
+            return res.status(200).json({ message: 'User deleted successfully' })
+        } else {
+            return res.status(404).json({ message: 'User not found!' })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Internal server error!',
+            error: error instanceof Error ? error.message : error
+        })
+    }
 })
 
 export default user_router
