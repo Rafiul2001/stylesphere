@@ -171,6 +171,9 @@ user_router.delete('/delete', strictToLogin, async (req: AuthenticatedRequest, r
             }
         }
 
+        // Delete the cart associated with the user
+        await database.collection<Cart>(CollectionListNames.CART).deleteOne({ userId });
+
         // Now delete the user document from DB
         const result = await database.collection<User>(CollectionListNames.USER).deleteOne({ _id: new ObjectId(userId) })
 
