@@ -8,6 +8,8 @@ import { AuthenticatedRequest, strictToLogin } from "../middlewares/auth"
 import { ObjectId } from "mongodb"
 import { Cart } from "../models/cart"
 import { uploadUserImage } from "../middlewares/imageStorage"
+import fs from 'fs/promises' // Use promise-based fs
+import path from 'path'
 
 const user_router = Router()
 
@@ -148,13 +150,34 @@ user_router.delete('/delete', strictToLogin, async (req: AuthenticatedRequest, r
     }
 
     try {
-        const result = await database.collection<User>(CollectionListNames.USER)
-            .deleteOne({ _id: new ObjectId(userId) })
+        // Find the user first to get image filename
+        const user = await database.collection<User>(CollectionListNames.USER).findOne({ _id: new ObjectId(userId) })
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found!' })
+        }
+
+        // Build full path to the user image file
+        // Adjust this path to match where you save user images
+        const imagePath = path.join(__dirname, '..', 'uploads', 'user_images', user.userImage)
+
+        // Delete the image file if it exists
+        try {
+            await fs.unlink(imagePath)
+        } catch (err) {
+            // If file does not exist, ignore error, else log it
+            if ((err as NodeJS.ErrnoException).code !== 'ENOENT') {
+                console.error('Error deleting user image:', err)
+            }
+        }
+
+        // Now delete the user document from DB
+        const result = await database.collection<User>(CollectionListNames.USER).deleteOne({ _id: new ObjectId(userId) })
 
         if (result.deletedCount === 1) {
             return res.status(200).json({ message: 'User deleted successfully' })
         } else {
-            return res.status(404).json({ message: 'User not found!' })
+            return res.status(500).json({ message: 'Failed to delete user' })
         }
     } catch (error) {
         return res.status(500).json({
