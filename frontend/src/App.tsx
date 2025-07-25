@@ -16,7 +16,7 @@ const App = () => {
                 <div>
                     <Navbar />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 container mx-auto">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/login" element={<Login />} />
