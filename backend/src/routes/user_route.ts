@@ -7,6 +7,7 @@ import { generateToken } from "../tools/jwt"
 import { AuthenticatedRequest, strictToLogin } from "../middlewares/auth"
 import { ObjectId } from "mongodb"
 import { Cart } from "../models/cart"
+import { uploadUserImage } from "../middlewares/imageStorage"
 
 const user_router = Router()
 
@@ -40,7 +41,7 @@ user_router.post('/login', async (req: Request<{}, {}, Partial<User>>, res: Resp
                     userName: existingUser.userName,
                     userEmail: existingUser.userEmail,
                     userPhoneNumber: existingUser.userPhoneNumber,
-                    userImage: existingUser.userImage
+                    userImage: `${req.protocol}://${req.get('host')}/uploads/${existingUser.userImage}`
                 }
             })
 
@@ -54,9 +55,10 @@ user_router.post('/login', async (req: Request<{}, {}, Partial<User>>, res: Resp
 })
 
 // Register User
-user_router.post('/register', async (req: Request<{}, {}, Partial<User>>, res: Response) => {
+user_router.post('/register', uploadUserImage.single("userImage"), async (req: Request<{}, {}, Partial<User>>, res: Response) => {
     try {
-        const [userName, userPhoneNumber, userEmail, userPassword, userImage] = [req.body.userName, req.body.userPhoneNumber, req.body.userEmail, req.body.userPassword, req.body.userImage]
+        const [userName, userPhoneNumber, userEmail, userPassword] = [req.body.userName, req.body.userPhoneNumber, req.body.userEmail, req.body.userPassword]
+        const imageFile = req.file
         if ((userEmail || userPhoneNumber) && userName && userPassword) {
 
             const query: any = { $or: [] }
@@ -76,7 +78,7 @@ user_router.post('/register', async (req: Request<{}, {}, Partial<User>>, res: R
                 userPassword: encryptedPassword,
                 userPhoneNumber: userPhoneNumber,
                 userEmail: userEmail,
-                userImage: userImage
+                userImage: imageFile?.filename
             })
             const insertUserResult = await database.collection<User>(CollectionListNames.USER).insertOne(newUser)
             const newCart = new Cart({
