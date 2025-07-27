@@ -3,7 +3,6 @@ import { CollectionListNames } from "../config/config";
 import { database } from "../mongodb_connection/connection";
 import { Product, SizeWiseQuantity } from "../models/product";
 import { ObjectId } from "mongodb";
-import { strictToLogin } from "../middlewares/auth";
 
 const product_router = Router()
 
@@ -24,7 +23,7 @@ product_router.get('/all-products', async (req: Request, res: Response) => {
 })
 
 // Get Product By Id
-product_router.get('/:id', async (req: Request<{ id: string }, {}, {}>, res: Response) => {
+product_router.get('/get-product/:id', async (req: Request<{ id: string }, {}, {}>, res: Response) => {
     try {
         const existingProduct = await database.collection<Product>(CollectionListNames.PRODUCT).findOne({ _id: new ObjectId(req.params.id) })
         res.status(201).json({
@@ -40,7 +39,7 @@ product_router.get('/:id', async (req: Request<{ id: string }, {}, {}>, res: Res
 })
 
 // Add a Product
-product_router.post('/add-product', strictToLogin, async (req: Request<{}, {}, Product>, res: Response) => {
+product_router.post('/add-product', async (req: Request<{}, {}, Product>, res: Response) => {
     try {
         const newProduct = new Product(
             {
@@ -63,7 +62,7 @@ product_router.post('/add-product', strictToLogin, async (req: Request<{}, {}, P
 })
 
 // Update a Product By Id
-product_router.put('/:id', strictToLogin, async (req: Request<{ id: string }, {}, { productPrice?: number, sizeWiseQuantity?: SizeWiseQuantity[] }>, res: Response) => {
+product_router.put('/update/:id', async (req: Request<{ id: string }, {}, { productPrice?: number, sizeWiseQuantity?: SizeWiseQuantity[] }>, res: Response) => {
     try {
         const { productPrice, sizeWiseQuantity } = req.body
         const updateResult = await database.collection<Product>(CollectionListNames.PRODUCT).findOneAndUpdate(
@@ -73,7 +72,8 @@ product_router.put('/:id', strictToLogin, async (req: Request<{ id: string }, {}
             {
                 $set: {
                     ...(productPrice !== undefined && { productPrice }),
-                    ...(sizeWiseQuantity !== undefined && { sizeWiseQuantity })
+                    ...(sizeWiseQuantity !== undefined && { sizeWiseQuantity }),
+                    totalQuantity: sizeWiseQuantity?.reduce((total, value) => total += value.quantity, 0)
                 }
             },
             { returnDocument: "after" } // to return updated document
