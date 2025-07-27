@@ -1,3 +1,12 @@
+export const color = {
+    RED: "RED",
+    BLUE: "BLUE",
+    GREEN: "GREEN",
+    YELLOW: "YELLOW",
+    BLACK: "BLACK",
+    GRAY: "GRAY"
+} as const
+
 export enum AvailableSizeKeys {
     M = "M",
     L = "L",
@@ -5,10 +14,17 @@ export enum AvailableSizeKeys {
     XXL = "XXL"
 }
 
+export type SizeWiseQuantity = {
+    size: string
+    quantity: number
+    color: string
+    image: string
+}
+
 export class Product {
     productName: string
     productPrice: number
-    sizeWiseQuantity: { size: string; quantity: number }[]
+    sizeWiseQuantity: SizeWiseQuantity[]
     totalQuantity: number
 
     constructor(
@@ -20,7 +36,7 @@ export class Product {
             {
                 productName: string,
                 productPrice?: number
-                sizeWiseQuantity?: { size: string; quantity: number }[]
+                sizeWiseQuantity?: SizeWiseQuantity[]
             }
     ) {
         this.productName = productName

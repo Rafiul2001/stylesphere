@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { CollectionListNames } from "../config/config";
 import { database } from "../mongodb_connection/connection";
-import { Product } from "../models/product";
+import { Product, SizeWiseQuantity } from "../models/product";
 import { ObjectId } from "mongodb";
 import { strictToLogin } from "../middlewares/auth";
 
@@ -18,8 +18,7 @@ product_router.get('/all-products', async (req: Request, res: Response) => {
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            message: "Failed to retrieve products",
-            error: (error as Error).message
+            message: "Failed to retrieve products"
         })
     }
 })
@@ -35,8 +34,7 @@ product_router.get('/:id', async (req: Request<{ id: string }, {}, {}>, res: Res
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            message: "Failed to retrieve product",
-            error: (error as Error).message
+            message: "Failed to retrieve product"
         })
     }
 })
@@ -59,14 +57,13 @@ product_router.post('/add-product', strictToLogin, async (req: Request<{}, {}, P
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            message: "Failed to add product",
-            error: (error as Error).message
+            message: "Failed to add product"
         })
     }
 })
 
 // Update a Product By Id
-product_router.put('/:id', strictToLogin, async (req: Request<{ id: string }, {}, { productPrice?: number, sizeWiseQuantity?: { size: string, quantity: number }[] }>, res: Response) => {
+product_router.put('/:id', strictToLogin, async (req: Request<{ id: string }, {}, { productPrice?: number, sizeWiseQuantity?: SizeWiseQuantity[] }>, res: Response) => {
     try {
         const { productPrice, sizeWiseQuantity } = req.body
         const updateResult = await database.collection<Product>(CollectionListNames.PRODUCT).findOneAndUpdate(
@@ -91,9 +88,9 @@ product_router.put('/:id', strictToLogin, async (req: Request<{ id: string }, {}
             })
         }
     } catch (error) {
+        console.log(error)
         res.status(500).json({
-            message: "Failed to add product",
-            error: (error as Error).message
+            message: "Failed to add product"
         })
     }
 })
@@ -108,8 +105,7 @@ product_router.delete('/:id', async (req: Request<{ id: string }, {}, {}>, res: 
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            message: "Failed to add product",
-            error: (error as Error).message
+            message: "Failed to add product"
         })
     }
 })
