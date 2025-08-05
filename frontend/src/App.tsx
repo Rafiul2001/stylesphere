@@ -1,37 +1,54 @@
-import { BrowserRouter, Route, Routes } from "react-router"
+import { createBrowserRouter, RouterProvider } from "react-router"
 import Home from "./pages/Home"
-import Cart from "./pages/Cart"
-import Dashboard from "./pages/Dashboard"
-import ViewProduct from "./pages/ViewProduct"
+import Dashboard from "./pages/dashboard/Dashboard"
+import NotFound from "./pages/NotFound"
+import RootLayout from "./pages/RootLayout"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
-import NotFound from "./pages/NotFound"
-import Navbar from "./components/Navbar"
-import Footer from "./components/Footer"
+import Cart from "./pages/Cart"
+import Orders from "./pages/dashboard/Orders"
+import AllProducts from "./pages/products/AllProducts"
+import ViewProduct from "./pages/products/ViewProduct"
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        Component: RootLayout,
+        children: [
+            { index: true, Component: Home },
+            { path: "login", Component: Login },
+            { path: "register", Component: Register },
+            { path: "cart", Component: Cart },
+            { path: "*", Component: NotFound }
+        ],
+    },
+    {
+        path: "dashboard",
+        Component: RootLayout,
+        children: [
+            {
+                index: true,
+                Component: Dashboard
+            },
+            {
+                path: "all-orders",
+                Component: Orders
+            }
+        ]
+    },
+    {
+        path: "products",
+        Component: RootLayout,
+        children: [
+            { index: true, Component: AllProducts },
+            { path: ":productId", Component: ViewProduct }
+        ]
+    }
+])
 
 const App = () => {
     return (
-        <BrowserRouter>
-            <div className="min-h-screen flex flex-col font-roboto">
-                <div>
-                    <Navbar />
-                </div>
-                <div className="flex-1 container mx-auto">
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/product/:id" element={<ViewProduct />} />
-                        <Route path="/cart" element={<Cart />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="*" element={<NotFound />} />
-                    </Routes>
-                </div>
-                <div>
-                    <Footer />
-                </div>
-            </div>
-        </BrowserRouter>
+        <RouterProvider router={router} />
     )
 }
 
