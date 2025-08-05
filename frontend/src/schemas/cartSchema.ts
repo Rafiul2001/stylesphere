@@ -12,3 +12,6 @@ export const cartItem = z.object({
 export const cartSchema = z.object({
     cartItems: z.array(cartItem)
 })
+
+export type TCartItem = z.infer<typeof cartItem>
+export type TCartSchema = z.infer<typeof cartSchema>
