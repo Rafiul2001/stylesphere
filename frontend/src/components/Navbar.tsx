@@ -1,29 +1,24 @@
 import { NavLink } from "react-router"
+import { authStore } from "../store/authStore"
 
 const navItems = [
-    {
-        url: "/",
-        text: "Home"
-    },
-    {
-        url: "/cart",
-        text: "Cart"
-    },
-    {
-        url: "/login",
-        text: "Login"
-    },
-    {
-        url: "/register",
-        text: "Register"
-    },
-    {
-        url: "/dashboard",
-        text: "Dashboard"
-    }
+    { url: "/", text: "Home" },
+    { url: "/cart", text: "Cart" },
+    { url: "/login", text: "Login", authRequired: false },
+    { url: "/register", text: "Register", authRequired: false },
+    { url: "/dashboard", text: "Dashboard", authRequired: true },
 ]
 
 const Navbar = () => {
+    const isAuthenticated = authStore((s) => s.isAuthenticated)
+
+    // Filter out login/register when authenticated, and dashboard when not
+    const filteredNavItems = navItems.filter((item) => {
+        if (item.authRequired === false && isAuthenticated) return false; // hide login/register
+        if (item.authRequired === true && !isAuthenticated) return false; // hide dashboard
+        return true;
+    });
+
     return (
         <div className="container mx-auto flex items-center justify-between py-4">
             <div className="w-60">
@@ -31,7 +26,7 @@ const Navbar = () => {
             </div>
             <ul className="flex gap-5">
                 {
-                    navItems.map((item, index) => {
+                    filteredNavItems.map((item, index) => {
                         return (
                             <li key={index}>
                                 <NavLink

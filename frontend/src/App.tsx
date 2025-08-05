@@ -9,6 +9,8 @@ import Cart from "./pages/Cart"
 import Orders from "./pages/dashboard/Orders"
 import AllProducts from "./pages/products/AllProducts"
 import ViewProduct from "./pages/products/ViewProduct"
+import { authStore } from "./store/authStore"
+import { useEffect } from "react"
 
 const router = createBrowserRouter([
     {
@@ -47,6 +49,20 @@ const router = createBrowserRouter([
 ])
 
 const App = () => {
+    const login = authStore((s) => s.login)
+
+    useEffect(() => {
+        login({
+            accessToken: "asd",
+            user:
+            {
+                userName: "Rafiul",
+                userPhoneNumber: "01407737666",
+                userEmail: "rafiul13062001@gmail.com"
+            }
+        })
+    }, [])
+
     return (
         <RouterProvider router={router} />
     )

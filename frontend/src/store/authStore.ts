@@ -13,7 +13,7 @@ type TAuthAction = {
     logout: () => void
 }
 
-export const authStore = create<TAuth & TAuthAction>((set, get) => ({
+export const authStore = create<TAuth & TAuthAction>((set) => ({
     isAuthenticated: false,
     accessToken: null,
     user: undefined,
