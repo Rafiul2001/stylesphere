@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from "express"
+import { Router, Request, Response } from "express"
 import { User } from "../models/user"
 import { database } from "../mongodb_connection/connection"
 import { CollectionListNames } from "../config/config"
@@ -36,15 +36,22 @@ user_router.post('/login', async (req: Request<{}, {}, Partial<User>>, res: Resp
                 return res.status(401).json({ message: "Invalid password", token: null })
             }
 
+            const cart = await database.collection<Cart>(CollectionListNames.CART).findOne({
+                userId: existingUser._id.toString()
+            })
+
             const generatedToken = generateToken({ userId: existingUser._id })
 
             return res.status(200).json({
-                message: "User logged in", token: generatedToken, user: {
+                message: "User logged in",
+                token: generatedToken,
+                user: {
                     userName: existingUser.userName,
                     userEmail: existingUser.userEmail,
                     userPhoneNumber: existingUser.userPhoneNumber,
                     userImage: `${req.protocol}://${req.get('host')}/uploads/${existingUser.userImage}`
-                }
+                },
+                cart: cart?._id
             })
 
         } catch (error) {

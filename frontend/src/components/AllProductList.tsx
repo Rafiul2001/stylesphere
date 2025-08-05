@@ -1,57 +1,26 @@
-import React from 'react'
-
-const products = [
-    {
-        _id: "6886391060e3f94a291ebdbd",
-        productName: "T-Shirt",
-        productPrice: 20,
-        sizeWiseQuantity: [
-            {
-                size: "M",
-                quantity: 10,
-                color: "RED",
-                image: "https://diadye.com/wp-content/uploads/2022/12/Custom-Red-T-Shirt-Front-Diadye.jpg"
-            },
-            {
-                size: "XL",
-                quantity: 15,
-                color: "RED",
-                image: "https://diadye.com/wp-content/uploads/2022/12/Custom-Red-T-Shirt-Front-Diadye.jpg"
-            }
-        ],
-        totalQuantity: 25
-    },
-    {
-        _id: "6886391060e3f94a291ebdbe",
-        productName: "T-Shirt",
-        productPrice: 20,
-        sizeWiseQuantity: [
-            {
-                size: "M",
-                quantity: 10,
-                color: "RED",
-                image: "https://diadye.com/wp-content/uploads/2022/12/Custom-Red-T-Shirt-Front-Diadye.jpg"
-            },
-            {
-                size: "XL",
-                quantity: 15,
-                color: "RED",
-                image: "https://diadye.com/wp-content/uploads/2022/12/Custom-Red-T-Shirt-Front-Diadye.jpg"
-            }
-        ],
-        totalQuantity: 25
-    }
-]
-
+import axios from 'axios'
+import { useEffect, useState } from 'react'
+import type { TProductSchema } from '../validators/productSchema'
 
 export const AllProductList = () => {
+    const [allProducts, setAllProducts] = useState<TProductSchema[]>([])
+
+    const getAllProducts = async (userId: string) => {
+        const response = await axios.get<TProductSchema[]>("http://localhost:3000/api/product/all-products").then((res) => res.data).catch((err) => console.log(err))
+        if (response) setAllProducts(response)
+        return response
+    }
+    useEffect(() => {
+        getAllProducts("123")
+    }, [])
+
     return (
         <div className="bg-white">
             <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                 <h2 className="sr-only">Products</h2>
 
                 <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-                    {products.map((product) => (
+                    {allProducts.map((product) => (
                         <a key={product._id} className="group">
                             <img
                                 alt={product.sizeWiseQuantity[0].image}

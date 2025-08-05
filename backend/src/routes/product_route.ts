@@ -10,10 +10,7 @@ const product_router = Router()
 product_router.get('/all-products', async (req: Request, res: Response) => {
     try {
         const allProducts = await database.collection<Product>(CollectionListNames.PRODUCT).find().toArray()
-        res.status(200).json({
-            message: "All products",
-            value: allProducts
-        })
+        res.status(200).json(allProducts)
     } catch (error) {
         console.log(error)
         res.status(500).json({

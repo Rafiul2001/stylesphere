@@ -24,7 +24,7 @@ export const sizeWiseQuantitySchema = z.object({
 })
 
 export const productSchema = z.object({
-  productId: z.string(),
+  _id: z.string(),
   productName: z.string(),
   productPrice: z.number(),
   sizeWiseQuantity: z.array(sizeWiseQuantitySchema),

@@ -1,0 +1,190 @@
+[
+    {
+        "_id": "P001",
+        "productName": "Classic T-Shirt",
+        "productPrice": 29.99,
+        "sizeWiseQuantity": [
+            {
+                "size": "M",
+                "quantity": 10,
+                "color": "RED",
+                "image": "/images/red-tshirt-m.jpg"
+            },
+            {
+                "size": "L",
+                "quantity": 5,
+                "color": "BLUE",
+                "image": "/images/blue-tshirt-l.jpg"
+            }
+        ],
+        "totalQuantity": 15
+    },
+    {
+        "_id": "P002",
+        "productName": "Slim Fit Jeans",
+        "productPrice": 59.99,
+        "sizeWiseQuantity": [
+            {
+                "size": "L",
+                "quantity": 7,
+                "color": "BLACK",
+                "image": "/images/black-jeans-l.jpg"
+            },
+            {
+                "size": "XL",
+                "quantity": 3,
+                "color": "GRAY",
+                "image": "/images/gray-jeans-xl.jpg"
+            }
+        ],
+        "totalQuantity": 10
+    },
+    {
+        "_id": "P003",
+        "productName": "Cotton Hoodie",
+        "productPrice": 49.99,
+        "sizeWiseQuantity": [
+            {
+                "size": "XL",
+                "quantity": 6,
+                "color": "GREEN",
+                "image": "/images/green-hoodie-xl.jpg"
+            },
+            {
+                "size": "XXL",
+                "quantity": 4,
+                "color": "BLACK",
+                "image": "/images/black-hoodie-xxl.jpg"
+            }
+        ],
+        "totalQuantity": 10
+    },
+    {
+        "_id": "P004",
+        "productName": "Running Shorts",
+        "productPrice": 24.99,
+        "sizeWiseQuantity": [
+            {
+                "size": "M",
+                "quantity": 12,
+                "color": "BLUE",
+                "image": "/images/blue-shorts-m.jpg"
+            }
+        ],
+        "totalQuantity": 12
+    },
+    {
+        "_id": "P005",
+        "productName": "Denim Jacket",
+        "productPrice": 79.99,
+        "sizeWiseQuantity": [
+            {
+                "size": "L",
+                "quantity": 3,
+                "color": "GRAY",
+                "image": "/images/gray-jacket-l.jpg"
+            },
+            {
+                "size": "XL",
+                "quantity": 2,
+                "color": "BLUE",
+                "image": "/images/blue-jacket-xl.jpg"
+            }
+        ],
+        "totalQuantity": 5
+    },
+    {
+        "_id": "P006",
+        "productName": "Summer Dress",
+        "productPrice": 39.99,
+        "sizeWiseQuantity": [
+            {
+                "size": "M",
+                "quantity": 8,
+                "color": "YELLOW",
+                "image": "/images/yellow-dress-m.jpg"
+            }
+        ],
+        "totalQuantity": 8
+    },
+    {
+        "_id": "P007",
+        "productName": "Casual Shirt",
+        "productPrice": 34.99,
+        "sizeWiseQuantity": [
+            {
+                "size": "M",
+                "quantity": 4,
+                "color": "GREEN",
+                "image": "/images/green-shirt-m.jpg"
+            },
+            {
+                "size": "L",
+                "quantity": 6,
+                "color": "RED",
+                "image": "/images/red-shirt-l.jpg"
+            }
+        ],
+        "totalQuantity": 10
+    },
+    {
+        "_id": "P008",
+        "productName": "Polo Shirt",
+        "productPrice": 27.99,
+        "sizeWiseQuantity": [
+            {
+                "size": "XL",
+                "quantity": 9,
+                "color": "BLUE",
+                "image": "/images/blue-polo-xl.jpg"
+            },
+            {
+                "size": "XXL",
+                "quantity": 5,
+                "color": "BLACK",
+                "image": "/images/black-polo-xxl.jpg"
+            }
+        ],
+        "totalQuantity": 14
+    },
+    {
+        "_id": "P009",
+        "productName": "Joggers",
+        "productPrice": 44.99,
+        "sizeWiseQuantity": [
+            {
+                "size": "L",
+                "quantity": 6,
+                "color": "GRAY",
+                "image": "/images/gray-joggers-l.jpg"
+            }
+        ],
+        "totalQuantity": 6
+    },
+    {
+        "_id": "P010",
+        "productName": "Windbreaker Jacket",
+        "productPrice": 89.99,
+        "sizeWiseQuantity": [
+            {
+                "size": "M",
+                "quantity": 3,
+                "color": "RED",
+                "image": "/images/red-jacket-m.jpg"
+            },
+            {
+                "size": "L",
+                "quantity": 3,
+                "color": "BLUE",
+                "image": "/images/blue-jacket-l.jpg"
+            },
+            {
+                "size": "XL",
+                "quantity": 2,
+                "color": "BLACK",
+                "image": "/images/black-jacket-xl.jpg"
+            }
+        ],
+        "totalQuantity": 8
+    }
+]
