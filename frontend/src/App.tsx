@@ -11,6 +11,9 @@ import AllProducts from "./pages/products/AllProducts"
 import ViewProduct from "./pages/products/ViewProduct"
 import { authStore } from "./store/authStore"
 import { useEffect } from "react"
+import { productStore } from "./store/productStore"
+import axios from "axios"
+import type { TProductSchema } from "./validators/productSchema"
 
 const router = createBrowserRouter([
     {
@@ -50,6 +53,19 @@ const router = createBrowserRouter([
 
 const App = () => {
     const login = authStore((s) => s.login)
+
+    const setProducts = productStore((s) => s.setProducts)
+
+    const getAllProducts = async () => {
+        const response = await axios.get<TProductSchema[]>("http://localhost:3000/api/product/all-products").then((res) => res.data).catch((err) => console.log(err))
+        if (response) setProducts(response)
+        return response
+    }
+    
+    useEffect(() => {
+        getAllProducts()
+    }, [])
+
 
     useEffect(() => {
         login({

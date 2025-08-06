@@ -1,4 +1,4 @@
-import { AllProductList } from "../components/AllProductList"
+import { Link } from "react-router"
 
 const Home = () => {
 
@@ -14,18 +14,13 @@ const Home = () => {
                         for both men and women. Fashion that fits your vibe — comfortable, trendy, and affordable.
                     </p>
                     <div className="mt-6">
-                        <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-xl text-lg font-semibold transition-all duration-200">
+                        <Link to={`/products`} className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-xl text-lg font-semibold transition-all duration-200">
                             Browse Products
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </section>
             {/* Banner Part End */}
-
-            {/* View All Products Start */}
-            <AllProductList />
-            {/* View All Products End */}
-            <section id="products"></section>
         </div>
     )
 }

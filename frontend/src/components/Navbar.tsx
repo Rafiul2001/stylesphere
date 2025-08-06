@@ -3,6 +3,7 @@ import { authStore } from "../store/authStore"
 
 const navItems = [
     { url: "/", text: "Home" },
+    { url: "/products", text: "Our Products" },
     { url: "/cart", text: "Cart" },
     { url: "/login", text: "Login", authRequired: false },
     { url: "/register", text: "Register", authRequired: false },
